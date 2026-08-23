@@ -29,6 +29,7 @@ random.seed(42)  # keeps the dataset reproducible run to run
 
 NUM_TRANSACTIONS = 60
 OUTPUT_DIR = Path(".")
+GROUND_TRUTH_DIR = Path("data/ground_truth")
 
 MERCHANTS = [
     "Myntra", "Swiggy", "Zomato", "Flipkart", "Zepto", "Blinkit",
@@ -332,7 +333,8 @@ def write_csv(filename, records):
 
 
 def write_truth(truth):
-    with open(OUTPUT_DIR / "truth.json", "w", encoding="utf-8") as f:
+    GROUND_TRUTH_DIR.mkdir(parents=True, exist_ok=True)
+    with open(GROUND_TRUTH_DIR / "truth.json", "w", encoding="utf-8") as f:
         json.dump(truth, f, indent=2)
 
 
@@ -356,7 +358,7 @@ def main():
     print(f"Case breakdown: {case_counts}")
     print(f"Gateway records: {len(gateway)} | Bank records: {len(bank)} | Ledger records: {len(ledger)}")
     print()
-    print("Files created: payment_gateway.csv, bank_statement.csv, merchant_ledger.csv, truth.json")
+    print("Files created: payment_gateway.csv, bank_statement.csv, merchant_ledger.csv, data/ground_truth/truth.json")
     print("Reminder: the matching engine should only read the three CSVs above, never truth.json.")
 
 
