@@ -1,6 +1,7 @@
 import csv
 from pathlib import Path
 from datetime import datetime
+from collections import defaultdict
 GATEWAY_FILE=Path("payment_gateway.csv")
 BANK_FILE=Path("bank_statement.csv")
 LEDGER_FILE=Path("merchant_ledger.csv")
@@ -26,6 +27,11 @@ def normalise(records,source,amount_field,date_field):
         r["_date"]=parse_date(r[date_field],source)
         r["_source"]=source
     return records
+def build_index(records):
+    index=defaultdict(list)
+    for r in records:
+        index[(r["_date"],r["_source"])].append(r)
+    return index
 
    
     
