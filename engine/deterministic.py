@@ -20,6 +20,13 @@ def parse_date(raw, source):
         "ledger": "%d/%m/%Y",
     }
     return datetime.strptime(raw, formats[source]).date() 
+def normalise(records,source,amount_field,date_field):
+    for r in records:
+        r["_amount"]=parse_amount(r[amount_field])
+        r["_date"]=parse_date(r[date_field],source)
+        r["_source"]=source
+    return records
+
    
     
    

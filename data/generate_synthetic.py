@@ -1,23 +1,3 @@
-"""
-Generates synthetic reconciliation data for three sources that a real
-payments company would actually have to reconcile against each other:
-
-  payment_gateway.csv  -> what the gateway logged when the payment happened
-  bank_statement.csv   -> what actually shows up in the bank account
-  merchant_ledger.csv  -> what the merchant's own books recorded
-
-These three should describe the same underlying transactions, but in
-practice they never line up cleanly - different formats, small amount
-differences, missing fields, and sometimes a transaction just doesn't
-make it into one of the systems at all. That's the whole point of this
-dataset: give the matching engine something realistically messy to work
-with, and keep a hidden answer key (truth.json) so we can actually score
-how well it did.
-
-truth.json should NEVER be read by the matching engine. It only exists
-so report/metrics.py can grade the output at the end.
-"""
-
 import csv
 import json
 import random
@@ -25,8 +5,7 @@ import string
 from datetime import datetime, timedelta
 from pathlib import Path
 
-random.seed(42)  # keeps the dataset reproducible run to run
-
+random.seed(46)  # for reproducibility
 NUM_TRANSACTIONS = 60
 OUTPUT_DIR = Path(".")
 GROUND_TRUTH_DIR = Path("data/ground_truth")
