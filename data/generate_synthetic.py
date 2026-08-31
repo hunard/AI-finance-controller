@@ -304,6 +304,7 @@ def create_source_records(transactions):
 
         entry = {
             "transaction_id": txn["transaction_id"],
+            "payment_id": txn["payment_id"],
             "case_type": case,
             "fee_case": fee_case,
             "ground_truth": {
