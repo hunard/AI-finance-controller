@@ -205,7 +205,7 @@ def match_gateway_to_bank(gateway_records, bank_records, date_tolerance_days=3):
                 continue
 
             gap = abs(expected - b["_amount"])
-            if gap <= expected * 0.15:
+            if gap <= expected * 0.25:
                 if best_gap is None or gap < best_gap:
                     best_match = b
                     best_index = i
