@@ -47,6 +47,35 @@ def match_pair(records_a,records_b):
             leftover_a.append(record)
     leftover_b=[r for bucket in index_b.values() for r in bucket]
     return matched_pairs,leftover_a,leftover_b
+def match_pair_with_date_tolerance(records_a, records_b, date_tolerance_days=3):
+    index_by_amount = defaultdict(list)
+    for r in records_b:
+        index_by_amount[r["_amount"]].append(r)
+
+    matched_pairs = []
+    leftover_a = []
+
+    for record in records_a:
+        candidates = index_by_amount.get(record["_amount"], [])
+        best_match = None
+        best_date_gap = None
+
+        for candidate in candidates:
+            gap = abs((candidate["_date"] - record["_date"]).days)
+            if gap <= date_tolerance_days:
+                if best_date_gap is None or gap < best_date_gap:
+                    best_match = candidate
+                    best_date_gap = gap
+
+        if best_match is not None:
+            matched_pairs.append((record, best_match))
+            index_by_amount[record["_amount"]].remove(best_match)
+        else:
+            leftover_a.append(record)
+
+    leftover_b = [r for bucket in index_by_amount.values() for r in bucket]
+
+    return matched_pairs, leftover_a, leftover_b
 GATEWAY_FEE_RATES = {
     "CARD": 0.02,
     "UPI": 0.012,
