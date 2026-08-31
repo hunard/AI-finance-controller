@@ -97,6 +97,100 @@ def diagnose_settlement_gap(gross_amount, payment_method, actual_credit, toleran
             reason = "unexplained settlement gap - does not match a known fee-calculation pattern"
 
     return {"status": "mismatch", "gap": gap, "reason": reason, "breakdown": breakdown}
-   
+GATEWAY_FEE_RATES = {
+    "CARD": 0.02,
+    "UPI": 0.012,
+    "NETBANKING": 0.012,
+    "WALLET": 0.012,
+}
+GST_RATE = 0.18
+COMMISSION_RATE = 0.10
+TDS_RATE = 0.01
+
+
+def expected_settlement(gross_amount, payment_method):
+    fee_rate = GATEWAY_FEE_RATES[payment_method]
+    gateway_fee = round(gross_amount * fee_rate, 2)
+    gst_on_fee = round(gateway_fee * GST_RATE, 2)
+    commission = round(gross_amount * COMMISSION_RATE, 2)
+    tds = round(gross_amount * TDS_RATE, 2)
+    net = round(gross_amount - gateway_fee - gst_on_fee - commission - tds, 2)
+
+    return {
+        "gateway_fee": gateway_fee,
+        "gst_on_fee": gst_on_fee,
+        "commission": commission,
+        "tds": tds,
+        "expected_net": net,
+    }
+
+
+def diagnose_settlement_gap(gross_amount, payment_method, actual_credit, tolerance=0.5):
+    breakdown = expected_settlement(gross_amount, payment_method)
+    gap = round(breakdown["expected_net"] - actual_credit, 2)
+
+    if abs(gap) <= tolerance:
+        return {"status": "correct", "gap": gap, "breakdown": breakdown}
+
+    if abs(gap - breakdown["tds"]) <= tolerance:
+        reason = "likely TDS deducted twice"
+    elif abs(gap + breakdown["tds"]) <= tolerance:
+        reason = "TDS appears to be missing entirely"
+    elif abs(gap + breakdown["commission"]) <= tolerance:
+        reason = "platform commission appears to be missing"
+    else:
+        wrong_gst = round(gross_amount * GST_RATE, 2)
+        gst_gap = round(wrong_gst - breakdown["gst_on_fee"], 2)
+        if abs(gap - gst_gap) <= tolerance:
+            reason = "GST appears to have been calculated on the gross amount instead of just the fee"
+        else:
+            reason = "unexplained settlement gap - does not match a known fee-calculation pattern"
+
+    return {"status": "mismatch", "gap": gap, "reason": reason, "breakdown": breakdown}
+
+
+def match_gateway_to_bank(gateway_records, bank_records, date_tolerance_days=3):
+    matched = []
+    leftover_gateway = []
+    used_bank_indices = set()
+
+    for g in gateway_records:
+        # if the payment method itself is missing (a real data-quality
+        # issue introduced by the missing_field distortion), we can't
+        # reconstruct the fee waterfall at all - correctly push this to
+        # leftover instead of guessing or crashing
+        if not g["method"]:
+            leftover_gateway.append(g)
+            continue
+
+        expected = expected_settlement(g["_amount"], g["method"])["expected_net"]
+
+        best_match = None
+        best_index = None
+        best_gap = None
+
+        for i, b in enumerate(bank_records):
+            if i in used_bank_indices:
+                continue
+            if abs((b["_date"] - g["_date"]).days) > date_tolerance_days:
+                continue
+
+            gap = abs(expected - b["_amount"])
+            if gap <= expected * 0.15:
+                if best_gap is None or gap < best_gap:
+                    best_match = b
+                    best_index = i
+                    best_gap = gap
+
+        if best_match is not None:
+            diagnosis = diagnose_settlement_gap(g["_amount"], g["method"], best_match["_amount"])
+            matched.append((g, best_match, diagnosis))
+            used_bank_indices.add(best_index)
+        else:
+            leftover_gateway.append(g)
+
+    leftover_bank = [b for i, b in enumerate(bank_records) if i not in used_bank_indices]
+
+    return matched, leftover_gateway, leftover_bank
     
    
