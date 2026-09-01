@@ -40,7 +40,7 @@ amount) and possible date drift? Respond ONLY with JSON, no other text:
         model="openai/gpt-oss-120b",
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
-        max_tokens=200,
+        max_tokens=1024,
     )
 
     raw = response.choices[0].message.content.strip()
@@ -53,3 +53,40 @@ amount) and possible date drift? Respond ONLY with JSON, no other text:
         return {"match_index": None, "confidence": 0, "reasoning": "model returned invalid JSON, treated as no match"}
 
     return result
+def apply_llm_layer(report, bank_leftover_gateway, bank_leftover_bank,
+                     resolve_fn, date_window_days=7, confidence_threshold=65):
+
+    leftover_by_payment_id = {g["payment_id"]: g for g in bank_leftover_gateway}
+
+    for entry in report:
+        pid = entry["payment_id"]
+        if entry["verdict"] not in ("bank_missing", "unresolved"):
+            continue
+        if pid not in leftover_by_payment_id:
+            continue
+
+        gateway_record = leftover_by_payment_id[pid]
+
+        candidates = [
+            b for b in bank_leftover_bank
+            if abs((b["_date"] - gateway_record["_date"]).days) <= date_window_days
+        ]
+
+        if not candidates:
+            entry["llm_checked"] = True
+            entry["llm_result"] = "no nearby candidates to consider"
+            continue
+
+        candidates = candidates[:5]
+
+        result = resolve_fn(gateway_record, candidates)
+        entry["llm_checked"] = True
+
+        if result.get("match_index") and result.get("confidence", 0) >= confidence_threshold:
+            entry["verdict"] = "llm_resolved"
+            entry["llm_confidence"] = result["confidence"]
+            entry["llm_reasoning"] = result["reasoning"]
+        else:
+            entry["llm_result"] = f"no confident match (best guess confidence: {result.get('confidence', 0)})"
+
+    return report
