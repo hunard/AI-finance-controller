@@ -1,0 +1,471 @@
+[
+  {
+    "payment_id": "pay_nTP3fAbnFb",
+    "merchant": "Urban Company",
+    "gross_amount": 349.0,
+    "date": "2026-08-15",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_f0LYTH8xIZ",
+    "merchant": "Swiggy Pvt Ltd",
+    "gross_amount": 599.0,
+    "date": "2026-08-04",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_mq6OLkTkx9",
+    "merchant": "Blinkit Pvt Ltd",
+    "gross_amount": 499.0,
+    "date": "2026-08-09",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_2NiiUHUAKw",
+    "merchant": "",
+    "gross_amount": 599.0,
+    "date": "2026-08-20",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_1aSQHqNgAC",
+    "merchant": "Zepto",
+    "gross_amount": 999.0,
+    "date": "2026-08-17",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_54LEgw9Yoo",
+    "merchant": "Amazon",
+    "gross_amount": 2499.0,
+    "date": "2026-08-18",
+    "verdict": "settlement_issue",
+    "reason": "platform commission appears to be missing",
+    "gap": -249.9
+  },
+  {
+    "payment_id": "pay_UQSyPx3Bpd",
+    "merchant": "Myntra",
+    "gross_amount": 23578.27,
+    "date": "2026-08-03",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_S2JpDzfOvz",
+    "merchant": "Swiggy",
+    "gross_amount": 299.0,
+    "date": "2026-08-07",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_5B1Id9Z850",
+    "merchant": "Zepto",
+    "gross_amount": 2999.0,
+    "date": "2026-08-09",
+    "verdict": "settlement_issue",
+    "reason": "platform commission appears to be missing",
+    "gap": -299.9
+  },
+  {
+    "payment_id": "pay_JHUdKF0j7e",
+    "merchant": "AJIO",
+    "gross_amount": 199.0,
+    "date": "2026-08-20",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_SoyPstUeC9",
+    "merchant": "Blinkit Online",
+    "gross_amount": 9085.18,
+    "date": "2026-08-06",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_2q3UjrnvQ0",
+    "merchant": "Blinkit",
+    "gross_amount": 7071.73,
+    "date": "2026-08-23",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_e24HZKjht3",
+    "merchant": "Cult.fit",
+    "gross_amount": 249.0,
+    "date": "2026-08-20",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_Tu5X1YqWg2",
+    "merchant": "Myntra",
+    "gross_amount": 5495.73,
+    "date": "2026-08-07",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_y8H6h8l7qg",
+    "merchant": "Zepto",
+    "gross_amount": 999.0,
+    "date": "2026-08-14",
+    "verdict": "settlement_issue",
+    "reason": "unexplained settlement gap - does not match a known fee-calculation pattern",
+    "gap": 148.04
+  },
+  {
+    "payment_id": "pay_65MPh3FPuR",
+    "merchant": "BookMyShow",
+    "gross_amount": 249.0,
+    "date": "2026-08-01",
+    "verdict": "settlement_issue",
+    "reason": "TDS appears to be missing entirely",
+    "gap": -2.49
+  },
+  {
+    "payment_id": "pay_PFX7TOrPMf",
+    "merchant": "AJIO",
+    "gross_amount": 799.0,
+    "date": "2026-08-15",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_aUVgAk7Gdp",
+    "merchant": "Cult.fit",
+    "gross_amount": 1999.0,
+    "date": "2026-08-22",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_WEoBSou3ej",
+    "merchant": "CRED",
+    "gross_amount": 10546.23,
+    "date": "2026-08-13",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_sy3ZHTX3Eq",
+    "merchant": "AJIO",
+    "gross_amount": 499.0,
+    "date": "2026-08-01",
+    "verdict": "settlement_issue",
+    "reason": "platform commission appears to be missing",
+    "gap": -49.9
+  },
+  {
+    "payment_id": "pay_iCdxnuVxUZ",
+    "merchant": "Urban Company",
+    "gross_amount": 599.0,
+    "date": "2026-08-04",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_hPInRVkLUh",
+    "merchant": "BookMyShow",
+    "gross_amount": 349.0,
+    "date": "2026-08-08",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_sQXXJcHPeO",
+    "merchant": "Zomato",
+    "gross_amount": 2499.0,
+    "date": "2026-08-06",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_Zf2pCLxb0l",
+    "merchant": "Flipkart",
+    "gross_amount": 349.0,
+    "date": "2026-08-08",
+    "verdict": "settlement_issue",
+    "reason": "GST appears to have been calculated on the gross amount instead of just the fee",
+    "gap": 62.07
+  },
+  {
+    "payment_id": "pay_SBbszpPwIv",
+    "merchant": "Blinkit",
+    "gross_amount": 1499.0,
+    "date": "2026-08-19",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_8GrgmolaHr",
+    "merchant": "AJIO",
+    "gross_amount": 1299.0,
+    "date": "2026-08-16",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_DYyeNdjIs9",
+    "merchant": "Nykaa",
+    "gross_amount": 2999.0,
+    "date": "2026-08-19",
+    "verdict": "bank_missing",
+    "reason": "payment method missing - cannot verify settlement",
+    "llm_checked": true,
+    "llm_result": "no confident match (best guess confidence: 15)"
+  },
+  {
+    "payment_id": "pay_gVMqfoIjzQ",
+    "merchant": "RAZORPAY*Zepto",
+    "gross_amount": 1999.0,
+    "date": "2026-08-19",
+    "verdict": "settlement_issue",
+    "reason": "likely TDS deducted twice",
+    "gap": 19.99
+  },
+  {
+    "payment_id": "pay_qidXKZ5BDs",
+    "merchant": "RAZORPAY*AJIO",
+    "gross_amount": 4999.0,
+    "date": "2026-08-01",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_qcUDO4lKNE",
+    "merchant": "ZEPTO",
+    "gross_amount": 18445.63,
+    "date": "2026-08-13",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_8zF9OHzlwU",
+    "merchant": "Swiggy Pvt Ltd",
+    "gross_amount": 249.0,
+    "date": "2026-08-21",
+    "verdict": "settlement_issue",
+    "reason": "likely TDS deducted twice",
+    "gap": 2.49
+  },
+  {
+    "payment_id": "pay_4ChZESFqZ8",
+    "merchant": "ZEPTO",
+    "gross_amount": 2999.0,
+    "date": "2026-08-11",
+    "verdict": "settlement_issue",
+    "reason": "unexplained settlement gap - does not match a known fee-calculation pattern",
+    "gap": 437.92
+  },
+  {
+    "payment_id": "pay_O1BEuVx518",
+    "merchant": "BookMyShow",
+    "gross_amount": 16598.47,
+    "date": "2026-08-22",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_BGCSzOjD8u",
+    "merchant": "MakeMyTrip",
+    "gross_amount": 22483.81,
+    "date": "2026-08-18",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_AgN2BR4cXs",
+    "merchant": "CRED",
+    "gross_amount": 19935.33,
+    "date": "2026-08-20",
+    "verdict": "unresolved",
+    "llm_checked": true,
+    "llm_result": "no confident match (best guess confidence: 5)"
+  },
+  {
+    "payment_id": "pay_ppaX3QjBvK",
+    "merchant": "Flipkart",
+    "gross_amount": 1499.0,
+    "date": "2026-08-19",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_1W84UZ3WoX",
+    "merchant": "Swiggy",
+    "gross_amount": 1299.0,
+    "date": "2026-08-21",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_4uzmW2wFqk",
+    "merchant": "Swiggy",
+    "gross_amount": 249.0,
+    "date": "2026-08-08",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_qhwUqxNxPD",
+    "merchant": "MakeMyTrip",
+    "gross_amount": 199.0,
+    "date": "2026-08-21",
+    "verdict": "settlement_issue",
+    "reason": "GST appears to have been calculated on the gross amount instead of just the fee",
+    "gap": 35.39
+  },
+  {
+    "payment_id": "pay_hoHyx6RHKT",
+    "merchant": "Flipkart",
+    "gross_amount": 799.0,
+    "date": "2026-08-14",
+    "verdict": "settlement_issue",
+    "reason": "likely TDS deducted twice",
+    "gap": 7.99
+  },
+  {
+    "payment_id": "pay_wylh0CPNLb",
+    "merchant": "Flipkart",
+    "gross_amount": 1499.0,
+    "date": "2026-08-11",
+    "verdict": "bank_missing",
+    "llm_checked": true,
+    "llm_result": "no confident match (best guess confidence: 30)"
+  },
+  {
+    "payment_id": "pay_ipkObaWouk",
+    "merchant": "Swiggy",
+    "gross_amount": 7893.76,
+    "date": "2026-08-17",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_dDyQE4efLe",
+    "merchant": "AJIO",
+    "gross_amount": 199.0,
+    "date": "2026-08-04",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_CzfAPxj5eZ",
+    "merchant": "Blinkit",
+    "gross_amount": 2999.0,
+    "date": "2026-08-04",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_vJnOng0wVJ",
+    "merchant": "Cult.fit",
+    "gross_amount": 17008.2,
+    "date": "2026-08-09",
+    "verdict": "ledger_missing"
+  },
+  {
+    "payment_id": "pay_liOeT8fGxC",
+    "merchant": "Urban Company",
+    "gross_amount": 12020.47,
+    "date": "2026-08-02",
+    "verdict": "unresolved",
+    "llm_checked": true,
+    "llm_result": "no confident match (best guess confidence: 95)"
+  },
+  {
+    "payment_id": "pay_znFvgQKGtn",
+    "merchant": "RAZORPAY*SWIGGY",
+    "gross_amount": 799.0,
+    "date": "2026-08-16",
+    "verdict": "bank_missing",
+    "llm_checked": true,
+    "llm_result": "no confident match (best guess confidence: 0)"
+  },
+  {
+    "payment_id": "pay_FZXe1cb51J",
+    "merchant": "AJIO",
+    "gross_amount": 349.0,
+    "date": "2026-08-12",
+    "verdict": "settlement_issue",
+    "reason": "GST appears to have been calculated on the gross amount instead of just the fee",
+    "gap": 62.07
+  },
+  {
+    "payment_id": "pay_e1UnWeNGmW",
+    "merchant": "Zomato",
+    "gross_amount": 999.0,
+    "date": "2026-08-03",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_INM1MjeBsr",
+    "merchant": "RAZORPAY*CRED",
+    "gross_amount": 4999.0,
+    "date": "2026-08-20",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_JlLF7BYZ8f",
+    "merchant": "Cult.fit",
+    "gross_amount": 2499.0,
+    "date": "2026-08-13",
+    "verdict": "settlement_issue",
+    "reason": "unexplained settlement gap - does not match a known fee-calculation pattern",
+    "gap": 95.42
+  },
+  {
+    "payment_id": "pay_Ixp07LjfP4",
+    "merchant": "Amazon",
+    "gross_amount": 249.0,
+    "date": "2026-08-05",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_wln6Eoie0g",
+    "merchant": "BookMyShow",
+    "gross_amount": 199.0,
+    "date": "2026-08-06",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_S8LUWoo7W4",
+    "merchant": "",
+    "gross_amount": 1499.0,
+    "date": "2026-08-07",
+    "verdict": "bank_missing",
+    "llm_checked": true,
+    "llm_result": "no confident match (best guess confidence: 0)"
+  },
+  {
+    "payment_id": "pay_SFhfjBFZf4",
+    "merchant": "Swiggy",
+    "gross_amount": 249.0,
+    "date": "2026-08-08",
+    "verdict": "bank_missing",
+    "llm_checked": true,
+    "llm_result": "no confident match (best guess confidence: 90)"
+  },
+  {
+    "payment_id": "pay_c4DZVDM4bn",
+    "merchant": "Flipkart",
+    "gross_amount": 299.0,
+    "date": "2026-08-21",
+    "verdict": "fully_reconciled"
+  },
+  {
+    "payment_id": "pay_piAMozPf8e",
+    "merchant": "Blinkit",
+    "gross_amount": 1299.0,
+    "date": "2026-08-01",
+    "verdict": "bank_missing",
+    "llm_checked": true,
+    "llm_result": "no confident match (best guess confidence: 95)"
+  },
+  {
+    "payment_id": "pay_UivuNZQ8Dl",
+    "merchant": "BLINKIT",
+    "gross_amount": 1999.0,
+    "date": "2026-08-17",
+    "verdict": "settlement_issue",
+    "reason": "likely TDS deducted twice",
+    "gap": 19.99
+  },
+  {
+    "payment_id": "pay_W1uhw3U3x8",
+    "merchant": "AJIO",
+    "gross_amount": 2999.0,
+    "date": "2026-08-18",
+    "verdict": "settlement_issue",
+    "reason": "unexplained settlement gap - does not match a known fee-calculation pattern",
+    "gap": -28.31
+  },
+  {
+    "payment_id": "pay_BSkBBT4MAN",
+    "merchant": "Myntra Online",
+    "gross_amount": 399.0,
+    "date": "2026-08-20",
+    "verdict": "settlement_issue",
+    "reason": "likely TDS deducted twice",
+    "gap": 3.99
+  }
+]

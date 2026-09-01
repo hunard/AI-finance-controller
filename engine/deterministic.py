@@ -126,16 +126,15 @@ def diagnose_settlement_gap(gross_amount, payment_method, actual_credit, toleran
             reason = "unexplained settlement gap - does not match a known fee-calculation pattern"
 
     return {"status": "mismatch", "gap": gap, "reason": reason, "breakdown": breakdown}
-GATEWAY_FEE_RATES = {
-    "CARD": 0.02,
-    "UPI": 0.012,
-    "NETBANKING": 0.012,
-    "WALLET": 0.012,
-}
-GST_RATE = 0.18
-COMMISSION_RATE = 0.10
-TDS_RATE = 0.01
+import json as _json
 
+with open("config.json") as _f:
+    _config = _json.load(_f)
+
+GATEWAY_FEE_RATES = _config["fee_config"]["gateway_fee_rates"]
+GST_RATE = _config["fee_config"]["gst_rate"]
+COMMISSION_RATE = _config["fee_config"]["commission_rate"]
+TDS_RATE = _config["fee_config"]["tds_rate"]
 
 def expected_settlement(gross_amount, payment_method):
     fee_rate = GATEWAY_FEE_RATES[payment_method]

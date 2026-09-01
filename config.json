@@ -1,0 +1,22 @@
+{
+    "merchant_id": "MERCHANT_DEMO_001",
+    "merchant_name": "Demo Marketplace Pvt Ltd",
+    "fee_config": {
+      "gateway_fee_rates": {
+        "CARD": 0.02,
+        "UPI": 0.012,
+        "NETBANKING": 0.012,
+        "WALLET": 0.012
+      },
+      "gst_rate": 0.18,
+      "commission_rate": 0.10,
+      "tds_rate": 0.01
+    },
+    "matching_config": {
+      "date_tolerance_days": 3,
+      "settlement_match_tolerance_pct": 0.25,
+      "llm_confidence_threshold": 65,
+      "llm_date_window_days": 7
+    },
+    "note": "In production, fee_config would be fetched per-merchant from Razorpay's account API rather than stored in a static file - merchants negotiate individual rates."
+  }
