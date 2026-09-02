@@ -13,8 +13,11 @@ def expected_verdict(truth_entry):
         missing = truth_entry.get("missing_from")
         return "bank_missing" if missing == "bank" else "ledger_missing"
 
-    if case_type == "split":
-        return "split_not_yet_handled"
+        if case_type == "split":
+        if truth_entry["fee_case"] == "correct":
+            return "fully_reconciled"
+        else:
+            return "settlement_issue"
 
     if truth_entry["fee_case"] == "correct":
         return "fully_reconciled"

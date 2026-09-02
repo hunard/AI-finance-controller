@@ -4,6 +4,7 @@ from scipy.optimize import linear_sum_assignment
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
+from itertools import combinations
 GATEWAY_FILE=Path("payment_gateway.csv")
 BANK_FILE=Path("bank_statement.csv")
 LEDGER_FILE=Path("merchant_ledger.csv")
@@ -179,6 +180,58 @@ def diagnose_settlement_gap(gross_amount, payment_method, actual_credit, toleran
     return {"status": "mismatch", "gap": gap, "reason": reason, "breakdown": breakdown}
 
 LARGE_COST = 1_000_000
+
+
+def find_splits_first(gateway_records, bank_records, date_tolerance_days=3, abs_tolerance=0.03):
+    """Must run BEFORE the 1:1 optimal matcher, on the FULL bank pool -
+    not leftovers. Reason: individual split-transaction bank rows often
+    fall within the 1:1 matcher's tolerance of some OTHER, unrelated
+    transaction, so the optimal matcher will greedily (and correctly,
+    by its own logic) claim them first if it runs before splits are
+    resolved - this was a real bug found and traced by hand.
+
+    Uses a near-EXACT tolerance (not the usual 25%) because a real split
+    sums almost perfectly to the expected settlement - it's the same
+    transaction, just recorded as two bank entries. A loose tolerance
+    here causes false positives: with clustered common amounts, many
+    unrelated pairs coincidentally sum close to many different targets."""
+
+    matched_splits = []
+    used_bank_idx = set()
+    remaining_gateway = []
+
+    for g in gateway_records:
+        if not g["method"]:
+            remaining_gateway.append(g)
+            continue
+
+        expected = expected_settlement(g["_amount"], g["method"])["expected_net"]
+
+        candidates = [
+            (i, b) for i, b in enumerate(bank_records)
+            if i not in used_bank_idx
+            and abs((b["_date"] - g["_date"]).days) <= date_tolerance_days
+        ]
+
+        found = None
+        for (i1, b1), (i2, b2) in combinations(candidates, 2):
+            combined = round(b1["_amount"] + b2["_amount"], 2)
+            if abs(expected - combined) <= abs_tolerance:
+                found = (i1, b1, i2, b2, combined)
+                break
+
+        if found:
+            i1, b1, i2, b2, combined = found
+            diagnosis = diagnose_settlement_gap(g["_amount"], g["method"], combined)
+            matched_splits.append((g, b1, diagnosis))
+            used_bank_idx.add(i1)
+            used_bank_idx.add(i2)
+        else:
+            remaining_gateway.append(g)
+
+    remaining_bank = [b for i, b in enumerate(bank_records) if i not in used_bank_idx]
+
+    return matched_splits, remaining_gateway, remaining_bank
 
 
 def match_gateway_to_bank(gateway_records, bank_records, date_tolerance_days=3, pct_tolerance=0.25):

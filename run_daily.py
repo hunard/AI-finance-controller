@@ -21,7 +21,7 @@ from pathlib import Path
 
 from engine.deterministic import (
     load_csv, normalise, match_pair_with_date_tolerance,
-    match_gateway_to_bank, GATEWAY_FILE, BANK_FILE, LEDGER_FILE,
+    match_gateway_to_bank,find_splits_first,GATEWAY_FILE, BANK_FILE, LEDGER_FILE,
 )
 from engine.report import build_final_report
 from engine.LLM_resolver import resolve_unmatched, apply_llm_layer
@@ -39,8 +39,11 @@ def run_reconciliation_job():
 
     gateway, bank, ledger = fetch_latest_sources()
 
-    ledger_matched, ledger_leftover_gw, _ = match_pair_with_date_tolerance(gateway, ledger)
-    bank_matched, bank_leftover_gw, bank_leftover_bank = match_gateway_to_bank(gateway, bank)
+        ledger_matched, ledger_leftover_gw, _ = match_pair_with_date_tolerance(gateway, ledger)
+
+    split_matched, gateway_after_splits, bank_after_splits = find_splits_first(gateway, bank)
+    bank_matched_11, bank_leftover_gw, bank_leftover_bank = match_gateway_to_bank(gateway_after_splits, bank_after_splits)
+    bank_matched = split_matched + bank_matched_11
 
     report = build_final_report(gateway, ledger_matched, ledger_leftover_gw, bank_matched, bank_leftover_gw)
     report = apply_llm_layer(report, bank_leftover_gw, bank_leftover_bank)
