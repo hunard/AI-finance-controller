@@ -1,4 +1,6 @@
 import csv
+import numpy as np
+from scipy.optimize import linear_sum_assignment
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
@@ -176,49 +178,48 @@ def diagnose_settlement_gap(gross_amount, payment_method, actual_credit, toleran
 
     return {"status": "mismatch", "gap": gap, "reason": reason, "breakdown": breakdown}
 
+LARGE_COST = 1_000_000
 
-def match_gateway_to_bank(gateway_records, bank_records, date_tolerance_days=3):
-    matched = []
-    leftover_gateway = []
-    used_bank_indices = set()
 
-    for g in gateway_records:
-        # if the payment method itself is missing (a real data-quality
-        # issue introduced by the missing_field distortion), we can't
-        # reconstruct the fee waterfall at all - correctly push this to
-        # leftover instead of guessing or crashing
+def match_gateway_to_bank(gateway_records, bank_records, date_tolerance_days=3, pct_tolerance=0.25):
+    n_gateway = len(gateway_records)
+    n_bank = len(bank_records)
+
+    cost_matrix = np.full((n_gateway, n_bank), LARGE_COST, dtype=float)
+    expected_cache = {}
+
+    for i, g in enumerate(gateway_records):
         if not g["method"]:
-            leftover_gateway.append(g)
             continue
+        key = (g["_amount"], g["method"])
+        if key not in expected_cache:
+            expected_cache[key] = expected_settlement(g["_amount"], g["method"])["expected_net"]
+        expected = expected_cache[key]
 
-        expected = expected_settlement(g["_amount"], g["method"])["expected_net"]
-
-        best_match = None
-        best_index = None
-        best_gap = None
-
-        for i, b in enumerate(bank_records):
-            if i in used_bank_indices:
-                continue
+        for j, b in enumerate(bank_records):
             if abs((b["_date"] - g["_date"]).days) > date_tolerance_days:
                 continue
-
             gap = abs(expected - b["_amount"])
-            if gap <= expected * 0.25:
-                if best_gap is None or gap < best_gap:
-                    best_match = b
-                    best_index = i
-                    best_gap = gap
+            if gap <= expected * pct_tolerance:
+                cost_matrix[i, j] = gap
 
-        if best_match is not None:
-            diagnosis = diagnose_settlement_gap(g["_amount"], g["method"], best_match["_amount"])
-            matched.append((g, best_match, diagnosis))
-            used_bank_indices.add(best_index)
-        else:
-            leftover_gateway.append(g)
+    row_ind, col_ind = linear_sum_assignment(cost_matrix)
 
-    leftover_bank = [b for i, b in enumerate(bank_records) if i not in used_bank_indices]
+    matched = []
+    matched_gateway_idx = set()
+    matched_bank_idx = set()
+
+    for i, j in zip(row_ind, col_ind):
+        if cost_matrix[i, j] >= LARGE_COST:
+            continue
+        g = gateway_records[i]
+        b = bank_records[j]
+        diagnosis = diagnose_settlement_gap(g["_amount"], g["method"], b["_amount"])
+        matched.append((g, b, diagnosis))
+        matched_gateway_idx.add(i)
+        matched_bank_idx.add(j)
+
+    leftover_gateway = [g for i, g in enumerate(gateway_records) if i not in matched_gateway_idx]
+    leftover_bank = [b for j, b in enumerate(bank_records) if j not in matched_bank_idx]
 
     return matched, leftover_gateway, leftover_bank
-    
-   

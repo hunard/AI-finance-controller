@@ -1,3 +1,4 @@
 rapidfuzz
 groq
 python-dotenv
+scipy
