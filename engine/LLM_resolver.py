@@ -1,5 +1,7 @@
 import os
 import json
+import hashlib
+from pathlib import Path
 from dotenv import load_dotenv
 from groq import Groq
 
@@ -7,13 +9,14 @@ load_dotenv()
 
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
+CACHE_PATH = Path("llm_cache.json")
+
 
 def resolve_unmatched(gateway_record, nearby_bank_candidates):
     """Takes ONE unresolved gateway record and a small list of nearby-ish
-    bank candidates (not the whole file - just a handful the deterministic
-    layer flagged as 'close but not close enough'). Asks the model to make
-    a narrow judgment call: does any of these actually belong to this
-    transaction, and how confident is it.
+    bank candidates. Asks the model to make a narrow judgment call: does
+    any of these actually belong to this transaction, and how confident
+    is it.
 
     This is deliberately the ONLY place in the whole pipeline that calls
     an LLM - everything else is rules, because everything else didn't
@@ -48,13 +51,53 @@ amount) and possible date drift? Respond ONLY with JSON, no other text:
     try:
         result = json.loads(raw)
     except json.JSONDecodeError:
-        # model didn't return clean JSON - treat as unresolved rather
-        # than crash or guess
         return {"match_index": None, "confidence": 0, "reasoning": "model returned invalid JSON, treated as no match"}
 
     return result
+
+
+def _cache_key(gateway_record, candidates):
+    candidate_fingerprint = "|".join(
+        f"{c['_amount']}:{c['_date']}" for c in candidates
+    )
+    raw = f"{gateway_record['payment_id']}:{candidate_fingerprint}"
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+
+def _load_cache():
+    if CACHE_PATH.exists():
+        with open(CACHE_PATH) as f:
+            return json.load(f)
+    return {}
+
+
+def _save_cache(cache):
+    with open(CACHE_PATH, "w") as f:
+        json.dump(cache, f, indent=2)
+
+
+def cached_resolve(gateway_record, candidates):
+    """Checks the cache first, only calls the real (expensive,
+    non-deterministic) LLM if this exact question hasn't been asked
+    before - guarantees repeated runs on the same data give identical
+    results."""
+
+    cache = _load_cache()
+    key = _cache_key(gateway_record, candidates)
+
+    if key in cache:
+        return cache[key]
+
+    result = resolve_unmatched(gateway_record, candidates)
+    cache[key] = result
+    _save_cache(cache)
+    return result
+
+
 def apply_llm_layer(report, bank_leftover_gateway, bank_leftover_bank,
-                     resolve_fn, date_window_days=7, confidence_threshold=65):
+                     date_window_days=7, confidence_threshold=65):
+    """Takes whatever the earlier layers couldn't resolve, and gives the
+    LLM one last narrow shot at it - only on genuine leftovers."""
 
     leftover_by_payment_id = {g["payment_id"]: g for g in bank_leftover_gateway}
 
@@ -79,7 +122,7 @@ def apply_llm_layer(report, bank_leftover_gateway, bank_leftover_bank,
 
         candidates = candidates[:5]
 
-        result = resolve_fn(gateway_record, candidates)
+        result = cached_resolve(gateway_record, candidates)
         entry["llm_checked"] = True
 
         if result.get("match_index") and result.get("confidence", 0) >= confidence_threshold:

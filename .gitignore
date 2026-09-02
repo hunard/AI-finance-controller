@@ -4,3 +4,4 @@ __pycache__/
 venv/
 data/ground_truth/
 .env
+llm_cache.json

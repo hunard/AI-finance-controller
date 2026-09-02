@@ -43,7 +43,7 @@ def run_reconciliation_job():
     bank_matched, bank_leftover_gw, bank_leftover_bank = match_gateway_to_bank(gateway, bank)
 
     report = build_final_report(gateway, ledger_matched, ledger_leftover_gw, bank_matched, bank_leftover_gw)
-    report = apply_llm_layer(report, bank_leftover_gw, bank_leftover_bank, resolve_unmatched)
+    report = apply_llm_layer(report, bank_leftover_gw, bank_leftover_bank)
 
     output_dir = Path("output")
     output_dir.mkdir(exist_ok=True)
