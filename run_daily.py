@@ -39,7 +39,7 @@ def run_reconciliation_job():
 
     gateway, bank, ledger = fetch_latest_sources()
 
-        ledger_matched, ledger_leftover_gw, _ = match_pair_with_date_tolerance(gateway, ledger)
+    ledger_matched, ledger_leftover_gw, _ = match_pair_with_date_tolerance(gateway, ledger)
 
     split_matched, gateway_after_splits, bank_after_splits = find_splits_first(gateway, bank)
     bank_matched_11, bank_leftover_gw, bank_leftover_bank = match_gateway_to_bank(gateway_after_splits, bank_after_splits)

@@ -18,7 +18,11 @@ def build_final_report(gateway, ledger_matched, ledger_leftover_gateway,
             "gross_amount": g["_amount"],
             "date": str(g["_date"]),
         }
-
+        if g.get("status") and g["status"] != "captured":
+            entry["verdict"] = "non_standard_status"
+            entry["reason"] = f"transaction status is '{g['status']}', not 'captured' - standard settlement fee logic does not apply"
+            report.append(entry)
+            continue
         if has_ledger_match and has_bank_match:
             bank_record, diagnosis = bank_matches_by_payment_id[pid]
             if diagnosis["status"] == "correct":
@@ -48,4 +52,4 @@ def summarize(report):
     counts = {}
     for entry in report:
         counts[entry["verdict"]] = counts.get(entry["verdict"], 0) + 1
-    return counts
+    return countsss
