@@ -188,18 +188,20 @@ def _vendor_similarity(a, b):
 
 
 def find_splits_first(gateway_records, bank_records, date_tolerance_days=3, abs_tolerance=0.035, vendor_threshold=60):
-    """Must run BEFORE the 1:1 optimal matcher, on the FULL bank pool.
-    Uses TWO independent signals to confirm a split, not just amount:
-    (1) a near-exact sum match (0.035 tolerance, derived from the 5
-    compounding round() operations in the fee waterfall, each worst-case
-    +/-0.005), and (2) both bank descriptions plausibly referencing the
-    same merchant as the gateway record.
+    """O(n) two-sum via bucketed hash lookup, instead of O(n^2) checking
+    every pair of candidates explicitly. Since the amount tolerance is
+    tiny (0.035), the complement's matching bucket can only be at most
+    one cent away, so checking 3 neighboring 1-cent buckets covers the
+    full tolerance range with constant-time lookups per candidate.
 
-    Amount-only matching was cross-validated across 5 seeds and found
-    unreliable (40% recall, 60% precision) - coincidental sum matches
-    happen often enough with clustered common amounts that a single
-    signal isn't trustworthy. Adding the vendor check improved this to
-    60% recall, 90% precision on the same validation."""
+    Must run BEFORE the 1:1 optimal matcher, on the FULL bank pool - see
+    module docstring for why. Uses two independent signals to confirm a
+    split: a near-exact sum match (0.035 tolerance, derived from 5
+    compounding round() operations in the fee waterfall, each worst-case
+    +/-0.005) AND both bank descriptions plausibly referencing the same
+    merchant. Amount-only matching was cross-validated across 5 seeds
+    and found unreliable (40% recall, 60% precision); adding the vendor
+    check improved this to 60% recall, 90% precision on the same test."""
 
     matched_splits = []
     used_bank_idx = set()
@@ -214,20 +216,30 @@ def find_splits_first(gateway_records, bank_records, date_tolerance_days=3, abs_
 
         candidates = [
             (i, b) for i, b in enumerate(bank_records)
-            if i not in used_bank_idx
-            and abs((b["_date"] - g["_date"]).days) <= date_tolerance_days
+            if i not in used_bank_idx and abs((b["_date"] - g["_date"]).days) <= date_tolerance_days
         ]
 
+        buckets = {}
         found = None
-        for (i1, b1), (i2, b2) in combinations(candidates, 2):
-            combined = round(b1["_amount"] + b2["_amount"], 2)
-            if abs(expected - combined) > abs_tolerance:
-                continue
-            sim1 = _vendor_similarity(g["merchant"], b1.get("description", ""))
-            sim2 = _vendor_similarity(g["merchant"], b2.get("description", ""))
-            if sim1 >= vendor_threshold and sim2 >= vendor_threshold:
-                found = (i1, b1, i2, b2, combined)
+
+        for i, b in candidates:
+            complement = round(expected - b["_amount"], 2)
+            for offset in (-0.01, 0.0, 0.01):
+                bucket_key = round(complement + offset, 2)
+                for j, b2 in buckets.get(bucket_key, []):
+                    combined = round(b["_amount"] + b2["_amount"], 2)
+                    if abs(expected - combined) > abs_tolerance:
+                        continue
+                    sim1 = _vendor_similarity(g["merchant"], b.get("description", ""))
+                    sim2 = _vendor_similarity(g["merchant"], b2.get("description", ""))
+                    if sim1 >= vendor_threshold and sim2 >= vendor_threshold:
+                        found = (i, b, j, b2, combined)
+                        break
+                if found:
+                    break
+            if found:
                 break
+            buckets.setdefault(round(b["_amount"], 2), []).append((i, b))
 
         if found:
             i1, b1, i2, b2, combined = found
