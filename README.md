@@ -1,7 +1,5 @@
 # AI Finance Controller — Multi-Source Settlement Reconciliation
 
-**Track:** AI Finance Controller (Razorpay AI Buildathon 2026)
-
 ## What this does, in one paragraph
 
 Three systems in a payments business almost never agree with each other: what the gateway charged, what actually landed in the bank after fees, and what the merchant's own books recorded. I built a reconciliation pipeline that reconciles all three automatically not just flagging "these don't match," but reconstructing the actual settlement math (gateway fee, GST, platform commission, TDS) to say *exactly* why they don't match. It runs on 60 synthetic transactions, hits 70% accuracy against a known ground truth, and produces an honest list of everything it couldn't resolve, with a reason for each.
