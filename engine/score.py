@@ -7,13 +7,15 @@ def load_truth(path="data/ground_truth/truth.json"):
 
 
 def expected_verdict(truth_entry):
+    if truth_entry["ground_truth"]["status"] != "captured":
+        return "non_standard_status"
     case_type = truth_entry["case_type"]
 
     if case_type == "orphan":
         missing = truth_entry.get("missing_from")
         return "bank_missing" if missing == "bank" else "ledger_missing"
 
-        if case_type == "split":
+    if case_type == "split":
         if truth_entry["fee_case"] == "correct":
             return "fully_reconciled"
         else:

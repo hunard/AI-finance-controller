@@ -16,7 +16,8 @@
       "date_tolerance_days": 3,
       "settlement_match_tolerance_pct": 0.25,
       "llm_confidence_threshold": 65,
-      "llm_date_window_days": 7
+      "llm_date_window_days": 7,
+      "note": "date_tolerance_days and settlement_match_tolerance_pct were selected via a 5-seed sensitivity sweep, not single-dataset tuning - see README for the comparison table. llm_confidence_threshold was not swept due to API cost/time; documented as a known remaining gap."
     },
     "note": "In production, fee_config would be fetched per-merchant from Razorpay's account API rather than stored in a static file - merchants negotiate individual rates."
   }
