@@ -1,4 +1,4 @@
-# AI Finance Controller — Multi-Source Settlement Reconciliation
+# SettleX — Multi-Source Settlement Reconciliation
 
 ## What this does, in one paragraph
 
